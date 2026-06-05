@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fast regnskapspartner — Go Advice AS</title>
+  <meta name="description" content="Go Advice tar ansvar for regnskapet ditt — MVA, avstemminger, rapporter og årsoppgjør. Fast pris. Klare rutiner. Ingen overraskelser. For norske bedrifter med 1–10 ansatte." />
+  <link rel="canonical" href="https://goadvice.no/fast-regnskapspartner" />
+  <link rel="icon" type="image/png" href="assets/Logomark_Coloured.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─── RESET & TOKENS ─────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --orange:      #F47C20;
+      --orange-lt:   #F9A84B;
+      --orange-pale: rgba(244,124,32,0.09);
+      --brown:       #7A3E2E;
+      --cream:       #FDFAF6;
+      --off-white:   #F5F0EA;
+      --charcoal:    #2B2B2B;
+      --grey-mid:    #7A7A7A;
+      --grey-light:  #E8E3DD;
+      --white:       #FFFFFF;
+      --sh:          0 4px 24px rgba(122,62,46,0.09);
+      --sh-lg:       0 12px 48px rgba(122,62,46,0.13);
+      --r:           16px;
+      --r-sm:        8px;
+      --max:         1100px;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Quicksand', sans-serif;
+      background: var(--cream);
+      color: var(--charcoal);
+      font-size: 16px;
+      line-height: 1.65;
+      overflow-x: hidden;
+    }
+    h1, h2, h3, h4 { font-family: 'Quicksand', sans-serif; color: var(--brown); line-height: 1.2; }
+    p { color: var(--grey-mid); line-height: 1.7; }
+    a { text-decoration: none; color: inherit; }
+    img { display: block; max-width: 100%; }
+    ul { list-style: none; }
+    .wrap { max-width: var(--max); margin: 0 auto; padding: 0 28px; }
+
+    /* ─── SHARED COMPONENTS ──────────────────── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 14px 28px; border-radius: 50px;
+      font-family: 'Quicksand', sans-serif; font-weight: 700; font-size: 15px;
+      border: none; cursor: pointer;
+      transition: all .22s ease; text-decoration: none; white-space: nowrap;
+    }
+    .btn-primary { background: var(--orange); color: #fff; }
+    .btn-primary:hover { background: #d96a12; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(244,124,32,.3); }
+    .btn-ghost { background: transparent; color: var(--brown); border: 2px solid rgba(122,62,46,.22); }
+    .btn-ghost:hover { border-color: var(--brown); background: rgba(122,62,46,.04); }
+    .btn-white { background: #fff; color: var(--orange); }
+    .btn-white:hover { background: var(--off-white); transform: translateY(-2px); }
+
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 11.5px; font-weight: 700; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--orange); margin-bottom: 16px;
+    }
+    .eyebrow::before {
+      content: ''; display: block; width: 18px; height: 2px;
+      background: var(--orange); border-radius: 2px;
+    }
+    .eyebrow-light { color: rgba(255,255,255,.55); }
+    .eyebrow-light::before { background: rgba(255,255,255,.35); }
+
+    .section-head { text-align: center; margin-bottom: 56px; }
+    .section-head h2 { font-size: clamp(26px, 3.6vw, 40px); font-weight: 700; margin-bottom: 14px; }
+    .section-head p { font-size: 17px; max-width: 540px; margin: 0 auto; }
+
+    .check-li {
+      display: flex; align-items: flex-start; gap: 10px;
+      font-size: 14px; color: var(--grey-mid); margin-bottom: 8px; font-weight: 500;
+    }
+    .check-li svg { flex-shrink: 0; margin-top: 2px; }
+
+    section { padding: 92px 0; }
+
+    /* ─── NAV ─────────────────────────────────── */
+    #nav {
+      position: sticky; top: 0; z-index: 200;
+      background: rgba(253,250,246,.97); backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(122,62,46,.07);
+      transition: box-shadow .25s;
+    }
+    #nav.scrolled { box-shadow: var(--sh); }
+    .nav-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      height: 66px; gap: 20px;
+    }
+    .nav-logo img { height: 34px; }
+    .nav-right { display: flex; align-items: center; gap: 20px; }
+    .nav-back {
+      font-size: 13.5px; font-weight: 600; color: var(--grey-mid);
+      display: flex; align-items: center; gap: 6px;
+      transition: color .18s;
+    }
+    .nav-back:hover { color: var(--brown); }
+    .nav-hamburger {
+      display: none; background: none; border: none; cursor: pointer;
+      padding: 6px; flex-direction: column; gap: 5px;
+    }
+    .nav-hamburger span {
+      display: block; width: 22px; height: 2px;
+      background: var(--brown); border-radius: 2px; transition: all .3s;
+    }
+    .mobile-drawer {
+      display: none; position: fixed; inset: 0;
+      background: var(--cream); z-index: 300;
+      flex-direction: column; align-items: center;
+      justify-content: center; gap: 24px; padding: 40px 28px;
+    }
+    .mobile-drawer.open { display: flex; }
+    .mobile-drawer a {
+      font-family: 'Quicksand', sans-serif; font-weight: 700;
+      font-size: 22px; color: var(--brown); text-align: center;
+    }
+    .drawer-close {
+      position: absolute; top: 18px; right: 24px;
+      background: none; border: none; font-size: 28px;
+      color: var(--brown); cursor: pointer;
+    }
+
+    /* ─── HERO ────────────────────────────────── */
+    #hero {
+      padding: 80px 0 96px;
+      position: relative; overflow: hidden;
+    }
+    .hd { position: absolute; border-radius: 50%; pointer-events: none; }
+    .hd1 { width: 500px; height: 500px; background: rgba(244,124,32,.05); right: -120px; top: -100px; }
+    .hd2 { width: 260px; height: 260px; border: 2px solid rgba(122,62,46,.06); left: -60px; bottom: -60px; }
+
+    .hero-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 60px; align-items: center;
+    }
+
+    .hero-badge-row {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 22px; flex-wrap: wrap;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: var(--orange-pale); border: 1px solid rgba(244,124,32,.18);
+      border-radius: 50px; padding: 5px 14px;
+      font-size: 12.5px; font-weight: 700; color: var(--orange);
+    }
+
+    .hero-h1 {
+      font-size: clamp(34px, 4.2vw, 52px); font-weight: 700;
+      color: var(--brown); line-height: 1.1; margin-bottom: 22px;
+      letter-spacing: -.01em;
+    }
+    .hero-h1 em { font-style: normal; color: var(--orange); }
+
+    .hero-sub {
+      font-size: 18px; color: var(--grey-mid);
+      max-width: 480px; margin-bottom: 36px; line-height: 1.65;
+    }
+
+    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 36px; }
+
+    .hero-trust {
+      display: flex; align-items: center; gap: 8px;
+      flex-wrap: wrap;
+    }
+    .ht-item {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 13px; font-weight: 600; color: var(--grey-mid);
+    }
+    .ht-sep { width: 1px; height: 14px; background: var(--grey-light); }
+
+    /* Hero visual — image placeholder */
+    .hero-visual { position: relative; }
+    .hero-img-wrap {
+      border-radius: 24px; overflow: hidden;
+      aspect-ratio: 4/5; box-shadow: var(--sh-lg);
+      background: var(--off-white);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center; padding: 32px;
+    }
+    .img-prompt-label {
+      font-size: 11px; font-weight: 700; letter-spacing: .09em;
+      text-transform: uppercase; color: var(--orange);
+      margin-bottom: 12px;
+    }
+    .img-prompt-text {
+      font-size: 13px; color: var(--grey-mid); line-height: 1.6;
+      max-width: 280px;
+    }
+    .hero-float-card {
+      position: absolute; bottom: 28px; left: -32px;
+      background: #fff; border-radius: var(--r);
+      padding: 20px 24px; box-shadow: var(--sh-lg); min-width: 220px;
+    }
+    .hfc-lbl {
+      font-size: 10.5px; font-weight: 700; letter-spacing: .07em;
+      text-transform: uppercase; color: var(--grey-mid); margin-bottom: 12px;
+    }
+    .hfc-items { display: flex; flex-direction: column; gap: 7px; }
+    .hfc-item {
+      display: flex; align-items: center; gap: 8px;
+      font-family: 'Quicksand', sans-serif; font-weight: 600;
+      font-size: 13px; color: var(--brown);
+    }
+    .hfc-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--orange); flex-shrink: 0; }
+
+    /* ─── TRUST STRIP ─────────────────────────── */
+    #trust-strip {
+      padding: 28px 0;
+      background: var(--white);
+      border-top: 1px solid var(--grey-light);
+      border-bottom: 1px solid var(--grey-light);
+    }
+    .trust-strip-inner {
+      display: flex; align-items: center;
+      justify-content: center; gap: 48px; flex-wrap: wrap;
+    }
+    .trust-logo {
+      display: flex; align-items: center; gap: 10px;
+      opacity: .6; transition: opacity .2s; text-decoration: none;
+    }
+    .trust-logo:hover { opacity: .9; }
+    .trust-logo-badge {
+      display: flex; align-items: center; justify-content: center;
+      height: 36px; padding: 0 14px;
+      border: 1.5px solid var(--grey-light);
+      border-radius: var(--r-sm); background: var(--white);
+    }
+    .trust-logo-badge span {
+      font-family: 'Quicksand', sans-serif; font-weight: 700;
+      font-size: 12px; color: var(--charcoal); letter-spacing: .03em; white-space: nowrap;
+    }
+    .trust-sep { width: 1px; height: 28px; background: var(--grey-light); }
+
+    /* ─── PROBLEM ─────────────────────────────── */
+    #problem {
+      background: var(--brown);
+      padding: 96px 0; position: relative; overflow: hidden;
+    }
+    .pd { position: absolute; border-radius: 50%; pointer-events: none; }
+    .pd1 { width: 420px; height: 420px; background: rgba(255,255,255,.03); right: -80px; top: -60px; }
+    .pd2 { width: 200px; height: 200px; border: 1.5px solid rgba(255,255,255,.06); left: -40px; bottom: -40px; }
+
+    .problem-head { text-align: center; margin-bottom: 52px; }
+    .problem-head h2 { color: #fff; font-size: clamp(26px, 3.6vw, 40px); font-weight: 700; margin-bottom: 14px; }
+    .problem-head p { color: rgba(255,255,255,.62); font-size: 17px; max-width: 520px; margin: 0 auto; }
+
+    .pain-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }
+    .pain-card {
+      background: rgba(255,255,255,.07);
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: var(--r); padding: 32px;
+      transition: background .2s, transform .22s;
+    }
+    .pain-card:hover { background: rgba(255,255,255,.11); transform: translateY(-3px); }
+    .pain-icon {
+      width: 48px; height: 48px; border-radius: 12px;
+      background: rgba(244,124,32,.18);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 20px;
+    }
+    .pain-card h3 { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 10px; line-height: 1.3; }
+    .pain-card p { font-size: 14px; color: rgba(255,255,255,.62); line-height: 1.65; }
+
+    /* ─── SOLUTION ────────────────────────────── */
+    #losning { background: var(--white); }
+    .sol-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; align-items: start; }
+    .sol-copy h2 { font-size: clamp(26px, 3.4vw, 38px); font-weight: 700; margin-bottom: 20px; line-height: 1.15; }
+    .sol-copy p { font-size: 17px; line-height: 1.7; margin-bottom: 28px; }
+    .sol-items { display: flex; flex-direction: column; gap: 20px; }
+    .sol-item {
+      display: flex; align-items: flex-start; gap: 16px;
+      padding: 20px; background: var(--cream);
+      border-radius: var(--r); border: 1px solid var(--grey-light);
+    }
+    .sol-item-icon {
+      width: 44px; height: 44px; border-radius: 12px;
+      background: var(--orange-pale); flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .sol-item h3 { font-size: 16px; font-weight: 700; color: var(--brown); margin-bottom: 5px; }
+    .sol-item p { font-size: 14px; color: var(--grey-mid); line-height: 1.6; }
+
+    /* ─── PACKAGES ────────────────────────────── */
+    #pakker { background: var(--cream); }
+    .pkg-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }
+    .pkg-card {
+      background: var(--white); border: 1.5px solid var(--grey-light);
+      border-radius: 20px; padding: 36px 32px;
+      display: flex; flex-direction: column; gap: 16px;
+      transition: border-color .22s, box-shadow .22s, transform .22s;
+    }
+    .pkg-card:hover { border-color: rgba(244,124,32,.3); box-shadow: var(--sh-lg); transform: translateY(-3px); }
+    .pkg-card.default {
+      border-color: var(--orange); box-shadow: var(--sh);
+      background: var(--white);
+    }
+    .pkg-default-tag {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--orange); color: #fff;
+      font-size: 11px; font-weight: 700; letter-spacing: .07em;
+      text-transform: uppercase; padding: 5px 12px; border-radius: 50px;
+      width: fit-content;
+    }
+    .pkg-name {
+      font-size: 20px; font-weight: 700; color: var(--brown);
+    }
+    .pkg-desc { font-size: 14.5px; color: var(--grey-mid); line-height: 1.6; }
+    .pkg-divider { height: 1px; background: var(--grey-light); }
+    .pkg-includes {
+      font-size: 11px; font-weight: 700; letter-spacing: .08em;
+      text-transform: uppercase; color: var(--grey-mid); margin-bottom: 8px;
+    }
+    .pkg-list { display: flex; flex-direction: column; gap: 8px; }
+    .pkg-list li { display: flex; align-items: flex-start; gap: 9px; font-size: 13.5px; color: var(--grey-mid); font-weight: 500; }
+    .pkg-list li svg { flex-shrink: 0; margin-top: 2px; }
+
+    /* ─── SOCIAL PROOF ────────────────────────── */
+    #bevis { background: var(--white); }
+    .stats-bar {
+      display: flex; align-items: center; justify-content: center;
+      gap: 44px; margin-bottom: 56px; flex-wrap: wrap;
+    }
+    .stat { text-align: center; }
+    .stat-num {
+      font-size: 38px; font-weight: 700;
+      color: var(--orange); line-height: 1; margin-bottom: 5px;
+    }
+    .stat-lbl { font-size: 13px; color: var(--grey-mid); font-weight: 600; }
+    .stats-sep { width: 1px; height: 44px; background: var(--grey-light); }
+
+    .reviews-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }
+    .review-card {
+      background: var(--cream); border-radius: var(--r);
+      padding: 28px; transition: transform .22s, box-shadow .22s;
+    }
+    .review-card:hover { transform: translateY(-3px); box-shadow: var(--sh); }
+    .stars { color: var(--orange); font-size: 15px; letter-spacing: 1px; margin-bottom: 14px; }
+    .review-text {
+      font-size: 15px; line-height: 1.7; color: var(--grey-mid);
+      margin-bottom: 20px;
+    }
+    .review-author { display: flex; align-items: center; gap: 10px; }
+    .review-avatar {
+      width: 38px; height: 38px; border-radius: 50%;
+      background: var(--orange-pale); display: flex;
+      align-items: center; justify-content: center;
+      font-weight: 700; font-size: 15px; color: var(--orange); flex-shrink: 0;
+    }
+    .review-name { font-weight: 700; font-size: 14px; color: var(--brown); }
+    .review-via { font-size: 12px; color: var(--grey-mid); }
+    .proof-cta { text-align: center; margin-top: 36px; }
+    .proof-cta a {
+      font-size: 14px; color: var(--grey-mid);
+      text-decoration: underline; text-underline-offset: 3px;
+      transition: color .18s; font-weight: 600;
+    }
+    .proof-cta a:hover { color: var(--orange); }
+
+    /* ─── HOW IT WORKS ────────────────────────── */
+    #hvordan { background: var(--cream); }
+    .steps-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; position: relative; }
+    .step-card { background: var(--white); border-radius: var(--r); padding: 36px 32px; }
+    .step-num-wrap {
+      width: 52px; height: 52px; border-radius: 50%;
+      background: var(--orange); display: flex;
+      align-items: center; justify-content: center; margin-bottom: 22px;
+    }
+    .step-num { font-weight: 700; font-size: 18px; color: #fff; }
+    .step-card h3 { font-size: 18px; font-weight: 700; color: var(--brown); margin-bottom: 10px; }
+    .step-card p { font-size: 14.5px; color: var(--grey-mid); line-height: 1.65; }
+    .step-tag {
+      display: inline-block; font-size: 11px; font-weight: 700;
+      letter-spacing: .07em; text-transform: uppercase;
+      color: var(--orange); background: var(--orange-pale);
+      padding: 4px 12px; border-radius: 50px; margin-top: 16px;
+    }
+
+    /* ─── FAQ ─────────────────────────────────── */
+    #faq { background: var(--white); }
+    .faq-list { max-width: 720px; margin: 0 auto; }
+    .faq-item { border-bottom: 1px solid var(--grey-light); }
+    .faq-item:first-child { border-top: 1px solid var(--grey-light); }
+    .faq-q {
+      width: 100%; background: none; border: none;
+      padding: 22px 0; display: flex; align-items: center;
+      justify-content: space-between; gap: 16px;
+      cursor: pointer; text-align: left;
+    }
+    .faq-q-text { font-family: 'Quicksand', sans-serif; font-weight: 700; font-size: 17px; color: var(--brown); line-height: 1.3; }
+    .faq-icon {
+      width: 28px; height: 28px; flex-shrink: 0; border-radius: 50%;
+      background: var(--orange-pale); display: flex;
+      align-items: center; justify-content: center;
+      transition: background .2s, transform .3s;
+    }
+    .faq-item.open .faq-icon { background: var(--orange); transform: rotate(45deg); }
+    .faq-item.open .faq-icon svg path { stroke: #fff; }
+    .faq-a { max-height: 0; overflow: hidden; transition: max-height .38s ease, padding .38s ease; }
+    .faq-item.open .faq-a { max-height: 320px; padding-bottom: 22px; }
+    .faq-a p { font-size: 15px; color: var(--grey-mid); line-height: 1.7; }
+    .faq-footer { text-align: center; margin-top: 36px; font-size: 14px; color: var(--grey-mid); }
+    .faq-footer a { color: var(--orange); font-weight: 700; }
+    .faq-footer a:hover { text-decoration: underline; }
+
+    /* ─── FINAL CTA ───────────────────────────── */
+    #cta {
+      background: var(--brown); padding: 96px 0;
+      position: relative; overflow: hidden;
+    }
+    .cta-d { position: absolute; border-radius: 50%; pointer-events: none; }
+    .cd1 { width: 440px; height: 440px; background: rgba(244,124,32,.09); right: -80px; top: 50%; transform: translateY(-50%); }
+    .cd2 { width: 200px; height: 200px; border: 1.5px solid rgba(255,255,255,.06); left: -50px; bottom: -50px; }
+    .cta-inner { text-align: center; max-width: 620px; margin: 0 auto; position: relative; }
+    .cta-tagline { font-size: 13px; font-weight: 700; color: rgba(255,255,255,.4); letter-spacing: .06em; text-transform: uppercase; margin-bottom: 18px; }
+    .cta-h2 { font-size: clamp(28px, 4vw, 46px); font-weight: 700; color: #fff; line-height: 1.15; margin-bottom: 16px; }
+    .cta-sub { font-size: 17px; color: rgba(255,255,255,.62); max-width: 460px; margin: 0 auto 36px; line-height: 1.7; }
+    .cta-contacts { display: flex; justify-content: center; gap: 28px; margin-top: 36px; flex-wrap: wrap; }
+    .cta-contact { display: flex; align-items: center; gap: 7px; font-size: 14px; color: rgba(255,255,255,.55); }
+    .cta-contact a { color: rgba(255,255,255,.8); font-weight: 600; }
+    .cta-contact a:hover { color: #fff; }
+
+    /* ─── FOOTER ──────────────────────────────── */
+    footer {
+      background: var(--off-white); padding: 48px 0;
+      border-top: 1px solid var(--grey-light);
+    }
+    .footer-grid {
+      display: grid; grid-template-columns: 1.4fr 1fr 1fr;
+      gap: 40px; align-items: start; margin-bottom: 36px;
+    }
+    .footer-brand img { height: 30px; margin-bottom: 12px; }
+    .footer-tagline { font-size: 13px; color: var(--grey-mid); max-width: 260px; line-height: 1.65; font-weight: 500; }
+    .footer-social { display: flex; gap: 10px; margin-top: 16px; }
+    .footer-social a {
+      width: 34px; height: 34px; border-radius: 8px;
+      background: rgba(122,62,46,.08);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--brown); transition: background .18s, color .18s;
+    }
+    .footer-social a:hover { background: var(--orange); color: #fff; }
+    .footer-col h5 {
+      font-size: 11px; font-weight: 700; letter-spacing: .09em;
+      text-transform: uppercase; color: var(--brown); margin-bottom: 14px;
+    }
+    .footer-col ul { display: flex; flex-direction: column; gap: 8px; }
+    .footer-col a, .footer-col li { font-size: 13.5px; color: var(--grey-mid); transition: color .18s; font-weight: 500; }
+    .footer-col a:hover { color: var(--orange); }
+    .footer-bottom {
+      padding-top: 24px; border-top: 1px solid var(--grey-light);
+      display: flex; justify-content: space-between;
+      align-items: center; flex-wrap: wrap; gap: 12px;
+    }
+    .footer-bottom span { font-size: 12.5px; color: var(--grey-mid); font-weight: 500; }
+    .footer-legal { display: flex; gap: 18px; flex-wrap: wrap; }
+    .footer-legal a { font-size: 12.5px; color: var(--grey-mid); font-weight: 500; }
+    .footer-legal a:hover { color: var(--orange); }
+
+    /* ─── ANIMATIONS ──────────────────────────── */
+    .fade-up { opacity: 0; transform: translateY(24px); transition: opacity .55s ease, transform .55s ease; }
+    .fade-up.in { opacity: 1; transform: translateY(0); }
+    .delay-1 { transition-delay: .1s; }
+    .delay-2 { transition-delay: .2s; }
+    .delay-3 { transition-delay: .3s; }
+
+    /* ─── RESPONSIVE ──────────────────────────── */
+    @media (max-width: 960px) {
+      .hero-grid, .sol-grid { grid-template-columns: 1fr; gap: 40px; }
+      .hero-visual { display: none; }
+      .pain-grid, .pkg-grid, .reviews-grid, .steps-grid { grid-template-columns: 1fr; }
+      .nav-right .nav-back, .nav-right .btn { font-size: 13px; padding: 9px 16px; }
+      .nav-hamburger { display: flex; }
+      .nav-right .nav-back { display: none; }
+    }
+    @media (max-width: 700px) {
+      .nav-right { gap: 8px; }
+      .stats-bar { gap: 20px; }
+      .stats-sep { display: none; }
+      .hero-actions { flex-direction: column; }
+      .trust-strip-inner { gap: 24px; }
+      .trust-sep { display: none; }
+      .footer-grid { grid-template-columns: 1fr; gap: 28px; }
+      .cta-contacts { flex-direction: column; gap: 14px; }
+      .footer-bottom { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── NAV ─────────────────────────────────── -->
+<header id="nav">
+  <div class="wrap">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo" aria-label="Go Advice AS — gå til forsiden">
+        <img src="assets/Logo_Coloured.png" alt="Go Advice AS" />
+      </a>
+      <div class="nav-right">
+        <a href="okonomiteam-support.html" class="nav-back">
+          <svg width="14" height="14" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M15 18l-6-6 6-6"/></svg>
+          Økonomiavdeling?
+        </a>
+        <a href="booking.html" class="btn btn-primary" style="font-size:14px; padding:10px 22px;">
+          <svg width="14" height="14" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+          Book møte
+        </a>
+      </div>
+      <button class="nav-hamburger" id="hamburger" aria-label="Åpne meny">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="mobile-drawer" id="drawer" role="dialog" aria-modal="true">
+  <button class="drawer-close" id="drawerClose">✕</button>
+  <a href="index.html" onclick="closeDrawer()">← Forsiden</a>
+  <a href="okonomiteam-support.html" onclick="closeDrawer()">Økonomiavdeling?</a>
+  <a href="booking.html" class="btn btn-primary" style="width:100%; max-width:280px; justify-content:center;" onclick="closeDrawer()">Book møte</a>
+</div>
+
+<!-- ─── HERO ─────────────────────────────────── -->
+<section id="hero">
+  <div class="hd hd1"></div>
+  <div class="hd hd2"></div>
+  <div class="wrap">
+    <div class="hero-grid">
+
+      <div class="hero-copy">
+        <div class="hero-badge-row">
+          <div class="hero-badge">
+            <svg width="13" height="13" fill="none" viewBox="0 0 24 24"><path stroke="#F47C20" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+            Fast regnskapspartner
+          </div>
+        </div>
+
+        <h1 class="hero-h1">
+          Du driver bedriften.<br/>
+          Vi tar ansvaret for<br/>
+          <em>regnskapet.</em>
+        </h1>
+
+        <p class="hero-sub">
+          Slutt å bekymre deg for MVA-frister, manglende bilag og årsoppgjør som hoper seg opp. Go Advice tar over — med faste rutiner, tydelig ansvar og leveranse til avtalt tid.
+        </p>
+
+        <div class="hero-actions">
+          <a href="booking.html" class="btn btn-primary" style="font-size:16px; padding:16px 32px;">
+            <svg width="15" height="15" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            Book et gratis møte
+          </a>
+          <a href="#pakker" class="btn btn-ghost" style="font-size:16px; padding:16px 32px;">Se pakker</a>
+        </div>
+
+        <div class="hero-trust">
+          <div class="ht-item">
+            <svg width="14" height="14" fill="none" viewBox="0 0 24 24"><path stroke="#F47C20" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+            Autorisert regnskapsfører
+          </div>
+          <div class="ht-sep"></div>
+          <div class="ht-item">
+            <svg width="14" height="14" fill="none" viewBox="0 0 24 24"><path stroke="#F47C20" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>
+            5,0 på Google
+          </div>
+          <div class="ht-sep"></div>
+          <div class="ht-item">
+            <svg width="14" height="14" fill="none" viewBox="0 0 24 24"><path stroke="#F47C20" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"/></svg>
+            100 % skybasert
+          </div>
+        </div>
+      </div>
+
+      <!-- Hero visual — image placeholder -->
+      <div class="hero-visual fade-up delay-1">
+        <div class="hero-img-wrap">
+          <div class="img-prompt-label">Bildeplass</div>
+          <p class="img-prompt-text">
+            <strong>Bildeprompt:</strong> En rolig, selvsikker norsk bedriftseier (30–45 år) ved et enkelt, ryddig skrivebord. Naturlig lys. Varm stemning i kremhvite og brune toner. Ingen kaos, ingen stress — bare oversikt.
+          </p>
+        </div>
+        <div class="hero-float-card">
+          <div class="hfc-lbl">Vi leverer</div>
+          <div class="hfc-items">
+            <div class="hfc-item"><span class="hfc-dot"></span>Løpende bokføring</div>
+            <div class="hfc-item"><span class="hfc-dot"></span>MVA og avstemminger</div>
+            <div class="hfc-item"><span class="hfc-dot"></span>Årsoppgjør</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─── TRUST STRIP ────────────────────────────── -->
+<section id="trust-strip" aria-label="Akkrediteringer">
+  <div class="wrap">
+    <div class="trust-strip-inner">
+      <a href="https://www.finanstilsynet.no/konsesjonar/regnskapsforetar/?id=20231029001" target="_blank" rel="noopener noreferrer" class="trust-logo" aria-label="Autorisert av Finanstilsynet">
+        <div class="trust-logo-badge"><span>Finanstilsynet</span></div>
+      </a>
+      <div class="trust-sep"></div>
+      <a href="https://www.regnskapnorge.no" target="_blank" rel="noopener noreferrer" class="trust-logo" aria-label="Regnskap Norge-medlem">
+        <div class="trust-logo-badge"><span>Regnskap Norge</span></div>
+      </a>
+      <div class="trust-sep"></div>
+      <a href="https://poweroffice.no" target="_blank" rel="noopener noreferrer" class="trust-logo" aria-label="PowerOffice Partner">
+        <div class="trust-logo-badge"><span>PowerOffice Partner</span></div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ─── PROBLEM ───────────────────────────────── -->
+<section id="problem">
+  <div class="pd pd1"></div>
+  <div class="pd pd2"></div>
+  <div class="wrap">
+    <div class="problem-head fade-up">
+      <div class="eyebrow eyebrow-light">Kjenner du deg igjen?</div>
+      <h2>Regnskapet tar tid og energi<br/>du egentlig ikke har</h2>
+      <p>Du driver en god bedrift. Men regnskapet hoper seg opp, MVA-frister føles stressende og du er aldri helt sikker på at alt er riktig.</p>
+    </div>
+    <div class="pain-grid">
+
+      <div class="pain-card fade-up delay-1">
+        <div class="pain-icon">
+          <svg width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="#F9A84B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <h3>MVA-fristen nærmer seg og du er ikke klar</h3>
+        <p>Bilagene er ikke sendt inn. Kvitteringene er spredt over e-post og telefon. Det er alltid noe som mangler den siste uka — og det er ikke slik det skal være.</p>
+      </div>
+
+      <div class="pain-card fade-up delay-2">
+        <div class="pain-icon">
+          <svg width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="#F9A84B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <h3>Regnskapsfører er vanskelig å komme i kontakt med</h3>
+        <p>Du sender e-post og venter. Svar kommer etter dager — eller ikke i det hele tatt. Spørsmål blir hengende. Du er ikke sikker på om noe er gjort feil.</p>
+      </div>
+
+      <div class="pain-card fade-up delay-3">
+        <div class="pain-icon">
+          <svg width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="#F9A84B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+        </div>
+        <h3>Du vet ikke helt hva som skjer med regnskapet ditt</h3>
+        <p>Årsoppgjøret er forsinket. Rapporten er utydelig. Bokføringen er bakpå. Du driver en god bedrift — men du har ikke oversikt over tallene, og det er urolig å leve med.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─── SOLUTION ──────────────────────────────── -->
+<section id="losning">
+  <div class="wrap">
+    <div class="sol-grid">
+
+      <div class="sol-copy fade-up">
+        <div class="eyebrow">Slik hjelper Go Advice</div>
+        <h2>Vi tar over.<br/>Du slipper bekymringen.</h2>
+        <p>Go Advice tar ansvar for hele regnskapsleveransen — fra løpende bokføring til årsoppgjør. Du sender dokumentene. Vi gjør resten, til avtalt tid og i henhold til klare rutiner.</p>
+        <a href="booking.html" class="btn btn-primary">Book et gratis møte</a>
+      </div>
+
+      <div class="sol-items fade-up delay-1">
+        <div class="sol-item">
+          <div class="sol-item-icon">
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24"><path stroke="#F47C20" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+          </div>
+          <div>
+            <h3>Løpende bokføring og bilagsbehandling</h3>
+            <p>Vi mottar og bokfører bilagene dine løpende. Ingenting hoper seg opp.</p>
+          </div>
+        </div>
+        <div class="sol-item">
+          <div class="sol-item-icon">
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24"><path stroke="#F47C20" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+          </div>
+          <div>
+            <h3>MVA-rapportering og skattefrister</h3>
+            <p>Vi leverer MVA-meldingen i tide, hver gang. Du får varsling i forkant.</p>
+          </div>
+        </div>
+        <div class="sol-item">
+          <div class="sol-item-icon">
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24"><path stroke="#F47C20" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+          </div>
+          <div>
+            <h3>Perioderapporter og årsoppgjør</h3>
+            <p>Du får jevnlige oppdateringer og et ryddig årsoppgjør — uten forsinkelser.</p>
+          </div>
+        </div>
+        <div class="sol-item">
+          <div class="sol-item-icon">
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24"><path stroke="#F47C20" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+          </div>
+          <div>
+            <h3>Tilgjengelig når du trenger det</h3>
+            <p>Direkte kontakt med din faste regnskapsfører. Svar innen normal arbeidstid.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─── PACKAGES ──────────────────────────────── -->
+<section id="pakker">
+  <div class="wrap">
+    <div class="section-head fade-up">
+      <div class="eyebrow">Tilpasset ditt behov</div>
+      <h2>Tre pakker — én riktig for deg</h2>
+      <p>Du velger pakken som passer nå. Du kan oppgradere når bedriften vokser.</p>
+    </div>
+
+    <div class="pkg-grid">
+
+      <!-- Compliance -->
+      <div class="pkg-card fade-up delay-1">
+        <div class="pkg-name">Compliance</div>
+        <p class="pkg-desc">For den lille, strukturerte bedriften som primært trenger riktig regnskap og levering av lovpålagte frister.</p>
+        <div class="pkg-divider"></div>
+        <div class="pkg-includes">Inkluderer</div>
+        <ul class="pkg-list">
+          <li><svg width="14" height="14" fill="none" viewBox="0 0 14 14"><circle cx="7" cy="7" r="6" stroke="#F47C20" stroke-width="1.4"/><path stroke="#F47C20" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" d="M4.5 7l2 2 3-3"/></svg>Løpende bokføring</li>
+          <li><svg width="14" height="14" fill="none" viewBox="0 0 14 14"><circle cx="7" cy="7" r="6" stroke="#F47C20" stroke-width="1.4"/><path stroke="#F47C20" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" d="M4.5 7l2 2 3-3"/></svg>MVA-rapportering</li>
+          <li><svg width="14" height="14" fill="none" viewBox="0 0 14 14"><circle cx="7" cy="7" r="6" stroke="#F47C20" stroke-width="1.4"/><path stroke="#F47C20" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" d="M4.5 7l2 2 3-3"/></svg>Årsregnskap og skattemelding</li>
+          <li><svg width="14" height="14" fill="none" viewBox="0 0 14 14"><circle cx="7" cy="7" r="6" stroke="#F47C20" stroke-width="1.4"/><path stroke="#F47C20" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" d="M4.5 7l2 2 3-3"/></svg>Lovpålagte frister overholdt</li>
+        </ul>
+        <a href="booking.html" class="btn btn-ghost" style="width:100%; justify-content:center; margin-top:8px;">Spør om denne pakken</a>
+      </div>
+
+      <!-- Control (default) -->
+      <div class="pkg-card default fade-up delay-2">
+        <div class="pkg-default-tag">
+          <svg width="12" height="12" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>
+          Anbefalt
+        </div>
+        <div class="pkg-name">Control</div>
+        <p class="pkg-desc">For den voksende bedriften som vil ha bedre struktur, løpende oppfølging, rapportering og forutsigbarhet i leveransen.</p>
+        <div class="pkg-divider"></div>
+        <div class="pkg-includes">Alt i Compliance, pluss</div>
+        <ul class="pkg-list">
+          <li><svg width="14" height="14" fill="none" viewBox="0 0 14 14"><circle cx="7" cy="7" r="6" stroke="#F47C20" stroke-width="1.4"/><path stroke="#F47C20" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" d="M4.5 7l2 2 3-3"/></svg>Løpende bankavstemming</li>
+          <li><svg width="14" height="14" fill="none" viewBox="0 0 14 14"><circle cx="7" cy="7" r="6" stroke="#F47C20" stroke-width="1.4"/><path stroke="#F47C20" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" d="M4.5 7l2 2 3-3"/></svg>Perioderapport (resultat og balanse)</li>
+          <li><svg width="14" height="14" fill="none" viewBox="0 0 14 14"><circle cx="7" cy="7" r="6" stroke="#F47C20" stroke-width="1.4"/><path stroke="#F47C20" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" d="M4.5 7l2 2 3-3"/></svg>Oppfølging av åpne poster</li>
+          <li><svg width="14" height="14" fill="none" viewBox="0 0 14 14"><circle cx="7" cy="7" r="6" stroke="#F47C20" stroke-width="1.4"/><path stroke="#F47C20" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" d="M4.5 7l2 2 3-3"/></svg>Strukturerte rutiner og tydelig ansvar</li>
+        </ul>
+        <a href="booking.html" class="btn btn-primary" style="width:100%; justify-content:center; margin-top:8px;">Book møte om denne pakken</a>
+      </div>
+
+      <!-- Insight -->
+      <div class="pkg-card fade-up delay-3">
+        <div class="pkg-name">Insight</div>
+        <p class="pkg-desc">For den ambisiøse bedriften som vil ha raskere leveranse, dypere rapportkommentarer og bedre grunnlag for beslutninger.</p>
+        <div class="pkg-divider"></div>
+        <div class="pkg-includes">Alt i Control, pluss</div>
+        <ul class="pkg-list">
+          <li><svg width="14" height="14" fill="none" viewBox="0 0 14 14"><circle cx="7" cy="7" r="6" stroke="#F47C20" stroke-width="1.4"/><path stroke="#F47C20" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" d="M4.5 7l2 2 3-3"/></svg>Raskere leveransesyklus</li>
+          <li><svg width="14" height="14" fill="none" viewBox="0 0 14 14"><circle cx="7" cy="7" r="6" stroke="#F47C20" stroke-width="1.4"/><path stroke="#F47C20" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" d="M4.5 7l2 2 3-3"/></svg>Rapportkommentar og avviksforklaring</li>
+          <li><svg width="14" height="14" fill="none" viewBox="0 0 14 14"><circle cx="7" cy="7" r="6" stroke="#F47C20" stroke-width="1.4"/><path stroke="#F47C20" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" d="M4.5 7l2 2 3-3"/></svg>KPI-oversikt og nøkkeltall</li>
+          <li><svg width="14" height="14" fill="none" viewBox="0 0 14 14"><circle cx="7" cy="7" r="6" stroke="#F47C20" stroke-width="1.4"/><path stroke="#F47C20" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" d="M4.5 7l2 2 3-3"/></svg>Forberedelse til årsoppgjørsgjennomgang</li>
+        </ul>
+        <a href="booking.html" class="btn btn-ghost" style="width:100%; justify-content:center; margin-top:8px;">Spør om denne pakken</a>
+      </div>
+
+    </div>
+
+    <p style="text-align:center; font-size:14px; color:var(--grey-mid); margin-top:28px;" class="fade-up">
+      Priser er individuelle og avhenger av volum og kompleksitet. Vi diskuterer det i møtet og sender konkret tilbud etterpå.
+    </p>
+  </div>
+</section>
+
+<!-- ─── SOCIAL PROOF ──────────────────────────── -->
+<section id="bevis">
+  <div class="wrap">
+    <div class="section-head fade-up">
+      <div class="eyebrow">Hva kundene sier</div>
+      <h2>5,0 på Google.<br/>Alle anmeldelser er femstjerne.</h2>
+    </div>
+
+    <div class="stats-bar fade-up">
+      <div class="stat">
+        <div class="stat-num">5,0 ⭐</div>
+        <div class="stat-lbl">Google-rating</div>
+      </div>
+      <div class="stats-sep"></div>
+      <div class="stat">
+        <div class="stat-num">11</div>
+        <div class="stat-lbl">Femstjerne-anmeldelser</div>
+      </div>
+      <div class="stats-sep"></div>
+      <div class="stat">
+        <div class="stat-num">100 %</div>
+        <div class="stat-lbl">Skybasert leveranse</div>
+      </div>
+    </div>
+
+    <div class="reviews-grid">
+
+      <!-- R01: SneakerPill OSLO -->
+      <div class="review-card fade-up delay-1">
+        <div class="stars">★★★★★</div>
+        <p class="review-text">«Jeg er veldig fornøyd med tjenesten. De hjelper meg godt med regnskapet og gjør prosessen mer oversiktlig. Det er lett å komme i kontakt med dem, noe som reduserer stress. De følger også opp det jeg må gjøre, slik at alt blir levert riktig og til rett tid.»</p>
+        <div class="review-author">
+          <div class="review-avatar">S</div>
+          <div>
+            <div class="review-name">SneakerPill OSLO</div>
+            <div class="review-via">Google-anmeldelse ⭐⭐⭐⭐⭐</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- R05: Brita Dakaj -->
+      <div class="review-card fade-up delay-2">
+        <div class="stars">★★★★★</div>
+        <p class="review-text">«God og ryddig regnskapsfører som gjør ting enkelt for oss. Jehson er tilgjengelig når vi trenger hjelp, og vi er veldig fornøyde med samarbeidet. Anbefales!»</p>
+        <div class="review-author">
+          <div class="review-avatar">B</div>
+          <div>
+            <div class="review-name">Brita Dakaj</div>
+            <div class="review-via">Google-anmeldelse ⭐⭐⭐⭐⭐</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- R07: Celestin Hoang (first 2 sentences only) -->
+      <div class="review-card fade-up delay-3">
+        <div class="stars">★★★★★</div>
+        <p class="review-text">«Her har du direkte kontakt med Jehson som er daglig leder og din regnskapsfører. Jehson er en dyktig regnskapsfører og har mye råd og tips å gi deg.»</p>
+        <div class="review-author">
+          <div class="review-avatar">C</div>
+          <div>
+            <div class="review-name">Celestin Hoang</div>
+            <div class="review-via">Google-anmeldelse ⭐⭐⭐⭐⭐</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="proof-cta fade-up">
+      <a href="https://share.google/uNU288fQ1VqIfXNPg" target="_blank" rel="noopener">Se alle 11 anmeldelser på Google →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ─── HOW IT WORKS ───────────────────────────── -->
+<section id="hvordan">
+  <div class="wrap">
+    <div class="section-head fade-up">
+      <div class="eyebrow">Slik kommer du i gang</div>
+      <h2>Tre steg til et ryddig regnskap</h2>
+      <p>Det starter med én samtale. Ingen skjult agenda — vi vil bare forstå situasjonen din.</p>
+    </div>
+
+    <div class="steps-grid">
+
+      <div class="step-card fade-up delay-1">
+        <div class="step-num-wrap"><span class="step-num">01</span></div>
+        <h3>Book et gratis 30-minutters møte</h3>
+        <p>Vi snakker om bedriften din, hva som fungerer og hva som stresser deg. Du trenger ikke forberede noe spesielt. Vi stiller spørsmålene.</p>
+        <span class="step-tag">Ingen forpliktelse</span>
+      </div>
+
+      <div class="step-card fade-up delay-2">
+        <div class="step-num-wrap"><span class="step-num">02</span></div>
+        <h3>Du mottar et konkret tilbud og en klar avtale</h3>
+        <p>Vi sender en oppsummering av det vi diskuterte, anbefalt pakke og pris. Alt er skriftlig. Ingen overraskelser i etterkant.</p>
+        <span class="step-tag">Tydelig og skriftlig</span>
+      </div>
+
+      <div class="step-card fade-up delay-3">
+        <div class="step-num-wrap"><span class="step-num">03</span></div>
+        <h3>Vi tar over og leverer — til avtalt tid</h3>
+        <p>Du sender dokumentene digitalt. Vi gjør resten. Du slipper å tenke på frister, bilag og årsoppgjør — det er vårt ansvar nå.</p>
+        <span class="step-tag">Forutsigbar leveranse</span>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─── FAQ ───────────────────────────────────── -->
+<section id="faq">
+  <div class="wrap">
+    <div class="section-head fade-up">
+      <div class="eyebrow">Vanlige spørsmål</div>
+      <h2>Det du lurer på — besvart ærlig</h2>
+    </div>
+
+    <div class="faq-list fade-up">
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span class="faq-q-text">Kan Go Advice ta over fra en annen regnskapsfører?</span>
+          <span class="faq-icon"><svg width="12" height="12" fill="none" viewBox="0 0 12 12"><path stroke="#F47C20" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M6 2v8M2 6h8"/></svg></span>
+        </button>
+        <div class="faq-a">
+          <p>Ja. Det er vanlig at kunder bytter til oss fra en annen regnskapsfører. Vi tar oss av overføringen av historiske data og oppsett i nytt system. Du trenger ikke gjøre noe selv — vi koordinerer med den forrige regnskapsføreren direkte.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span class="faq-q-text">Hva skjer hvis jeg leverer bilag sent?</span>
+          <span class="faq-icon"><svg width="12" height="12" fill="none" viewBox="0 0 12 12"><path stroke="#F47C20" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M6 2v8M2 6h8"/></svg></span>
+        </button>
+        <div class="faq-a">
+          <p>Vi sender deg en påminnelse i forkant av frister. Levering av bilag til rett tid er en forutsetning for at vi kan levere til rett tid. Det avklares i avtalen hva som gjelder hvis dokumenter er forsinket — det er ingen overraskelser underveis.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span class="faq-q-text">Hva koster det?</span>
+          <span class="faq-icon"><svg width="12" height="12" fill="none" viewBox="0 0 12 12"><path stroke="#F47C20" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M6 2v8M2 6h8"/></svg></span>
+        </button>
+        <div class="faq-a">
+          <p>Prisen avhenger av volum, kompleksitet og valgt pakke. Vi diskuterer det i møtet og sender et konkret tilbud etterpå. Vi jobber med fastpris der det er mulig, slik at du vet hva du betaler fra måned til måned.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span class="faq-q-text">Jobber dere bare digitalt, eller kan vi møtes fysisk?</span>
+          <span class="faq-icon"><svg width="12" height="12" fill="none" viewBox="0 0 12 12"><path stroke="#F47C20" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M6 2v8M2 6h8"/></svg></span>
+        </button>
+        <div class="faq-a">
+          <p>Vi er primært digitale, og det fungerer godt for alle våre kunder — uansett hvor i Norge de befinner seg. Videomøter er like effektive som fysiske møter. Fysiske møter i Hønefoss-området kan avtales ved behov.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span class="faq-q-text">Hva er minimumsperioden for en avtale?</span>
+          <span class="faq-icon"><svg width="12" height="12" fill="none" viewBox="0 0 12 12"><path stroke="#F47C20" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M6 2v8M2 6h8"/></svg></span>
+        </button>
+        <div class="faq-a">
+          <p>Det avklares i den individuelle avtalen. Vi foretrekker løpende samarbeid over tid — det er det som gir deg som kunde den beste kontinuiteten og oss muligheten til å lære bedriften din ordentlig å kjenne.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <p class="faq-footer fade-up">Har du et spørsmål vi ikke har besvart? <a href="mailto:kontakt@goadvice.no">Send oss en e-post</a>.</p>
+  </div>
+</section>
+
+<!-- ─── FINAL CTA ──────────────────────────────── -->
+<section id="cta">
+  <div class="cta-d cd1"></div>
+  <div class="cta-d cd2"></div>
+  <div class="wrap">
+    <div class="cta-inner fade-up">
+      <p class="cta-tagline">Færre overraskelser. Bedre oversikt.</p>
+      <h2 class="cta-h2">Klar til å slippe<br/>regnskapsbekymringen?</h2>
+      <p class="cta-sub">Book et gratis 30-minutters møte. Vi går gjennom situasjonen din og ser om vi passer for hverandre — uten forpliktelse.</p>
+      <a href="booking.html" class="btn btn-white" style="font-size:16px; padding:16px 36px;">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        Book et gratis møte
+      </a>
+      <div class="cta-contacts">
+        <div class="cta-contact">
+          <svg width="14" height="14" fill="none" viewBox="0 0 24 24"><path stroke="rgba(255,255,255,0.4)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+          <a href="mailto:kontakt@goadvice.no">kontakt@goadvice.no</a>
+        </div>
+        <div class="cta-contact">
+          <svg width="14" height="14" fill="none" viewBox="0 0 24 24"><path stroke="rgba(255,255,255,0.4)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke="rgba(255,255,255,0.4)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          Hønefoss og hele Norge
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FOOTER ────────────────────────────────── -->
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <img src="assets/Logo_Coloured.png" alt="Go Advice AS" />
+        <p class="footer-tagline">Autorisert regnskapsfører. Strukturert. Pålitelig. Digitalt.</p>
+        <div class="footer-social">
+          <a href="https://www.linkedin.com/company/goadviceas/" target="_blank" rel="noopener" aria-label="LinkedIn">
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          </a>
+          <a href="https://www.facebook.com/goadviceas" target="_blank" rel="noopener" aria-label="Facebook">
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          </a>
+        </div>
+      </div>
+      <nav class="footer-col">
+        <h5>Tjenester</h5>
+        <ul>
+          <li><a href="fast-regnskapspartner.html">Fast regnskapspartner</a></li>
+          <li><a href="okonomiteam-support.html">Økonomiteam Support</a></li>
+          <li><a href="booking.html">Book møte</a></li>
+        </ul>
+      </nav>
+      <div class="footer-col">
+        <h5>Kontakt</h5>
+        <ul>
+          <li><a href="mailto:kontakt@goadvice.no">kontakt@goadvice.no</a></li>
+          <li>Snarveien 6, 3517 Hønefoss</li>
+          <li>Org.nr. 931 426 680</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Go Advice AS. Alle rettigheter forbeholdt.</span>
+      <div class="footer-legal">
+        <a href="personvern.html">Personvern</a>
+        <a href="vilkar.html">Vilkår</a>
+        <a href="informasjonskapsler.html">Informasjonskapsler</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ─── SCRIPTS ───────────────────────────────── -->
+<script>
+  const hamburger = document.getElementById('hamburger');
+  const drawer = document.getElementById('drawer');
+  const drawerClose = document.getElementById('drawerClose');
+  hamburger.addEventListener('click', () => drawer.classList.add('open'));
+  drawerClose.addEventListener('click', () => drawer.classList.remove('open'));
+  function closeDrawer() { drawer.classList.remove('open'); }
+
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 20);
+  }, { passive: true });
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+  document.querySelectorAll('.faq-q').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const item = btn.closest('.faq-item');
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item.open').forEach(i => {
+        i.classList.remove('open');
+        i.querySelector('.faq-q').setAttribute('aria-expanded', 'false');
+      });
+      if (!isOpen) {
+        item.classList.add('open');
+        btn.setAttribute('aria-expanded', 'true');
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
